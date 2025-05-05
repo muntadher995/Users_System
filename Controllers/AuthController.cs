@@ -53,8 +53,23 @@ public class AuthController : ControllerBase
     public async Task<IActionResult> RegisterAdmin(AdminRegisterDto dto)
         => Ok(await _auth.RegisterAdminAsync(dto));
 
-    [HttpPost("login")]
-    public async Task<IActionResult> Login(LoginDto dto)
-        => Ok(await _auth.LoginAsync(dto));
+    [HttpPost("login/user")]
+    public async Task<IActionResult> LoginUser(LoginDto dto)
+        => Ok(await _auth.LoginUserAsync(dto));
+
+    [HttpPost("login/admin")]
+    public async Task<IActionResult> LoginAdmin(LoginDto dto)
+        => Ok(await _auth.LoginAdminAsync(dto));
+
+    [HttpPost("refresh-token")]
+    public async Task<IActionResult> RefreshToken([FromBody] string refreshToken)
+        => Ok(await _auth.RefreshTokenAsync(refreshToken));
+
+    [HttpPost("revoke-token")]
+    public async Task<IActionResult> RevokeToken([FromBody] string refreshToken)
+    {
+        await _auth.RevokeRefreshTokenAsync(refreshToken);
+        return Ok(new { message = "Token revoked successfully" });
+    }
 }
  

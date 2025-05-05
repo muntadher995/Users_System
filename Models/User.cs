@@ -16,6 +16,8 @@ namespace UserSystem.Models
     public string PasswordHash { get; set; } = default!;
 
     public ICollection<RoleAssignment> RoleAssignments { get; set; } = new List<RoleAssignment>();
+    public string? RefreshToken { get; set; }
+    public DateTime? RefreshTokenExpiryTime { get; set; }
 }
 
 // Models/Admin.cs  – identical to User but kept separate per requirement
@@ -33,6 +35,8 @@ public class Admin
     public string PasswordHash { get; set; } = default!;
 
     public ICollection<RoleAssignment> RoleAssignments { get; set; } = new List<RoleAssignment>();
+    public string? RefreshToken { get; set; }
+    public DateTime? RefreshTokenExpiryTime { get; set; }
 }
 
 // Models/Role.cs

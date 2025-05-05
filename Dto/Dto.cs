@@ -27,4 +27,4 @@ public record LoginDto(
     [Required] string Password);
 
 // DTOs/AuthResponseDto.cs
-public record AuthResponseDto(string Token, DateTime ExpiresAt);
+public record AuthResponseDto(string AccessToken, string RefreshToken, DateTime ExpiresAt);
