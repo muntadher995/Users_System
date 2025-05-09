@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿/*using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using UserSystem.Models;
 
@@ -7,7 +7,7 @@ using UserSystem.Models;
     public static async Task SeedAsync(IServiceProvider sp)
     {
         using var scope = sp.CreateScope();
-        var ctx = scope.ServiceProvider.GetRequiredService<UserSystemDbContext>();
+        var ctx = scope.ServiceProvider.GetRequiredService<Ai_LibraryApiDbContext>();
         await ctx.Database.MigrateAsync();
 
         var pwHasher = new PasswordHasher<object>();
@@ -31,4 +31,4 @@ using UserSystem.Models;
             await ctx.SaveChangesAsync();
         }
     }
-}
+}*/

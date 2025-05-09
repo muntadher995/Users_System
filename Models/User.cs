@@ -1,70 +1,39 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
-namespace UserSystem.Models
+namespace Ai_LibraryApi.Models
 {
    public class User
 {
+    [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public Guid Id { get; set; }
 
     [Required, MaxLength(100)]
-    public string UserName { get; set; } = default!;
+    public string? UserName { get; set; }
+
+    public string? approve_status { get; set; }  
 
     [Required, EmailAddress, MaxLength(200)]
-    public string Email { get; set; } = default!;
+    public string? Email { get; set; }
+    public DateTime? emailVerifedAt { get; set; }
+    public bool status { get; set; } = false;   
 
     [Required]
-    public string PasswordHash { get; set; } = default!;
+    public string? PasswordHash { get; set; }
+    public string? phone { get; set; }
 
-    public ICollection<RoleAssignment> RoleAssignments { get; set; } = new List<RoleAssignment>();
-    public string? RefreshToken { get; set; }
+    public DateTime? phoneVerifedAt { get; set; }
+    public string? RefreshTokenHash { get; set; }
     public DateTime? RefreshTokenExpiryTime { get; set; }
-}
-
-// Models/Admin.cs  – identical to User but kept separate per requirement
-public class Admin
-{
-    public Guid Id { get; set; }
-
-    [Required, MaxLength(100)]
-    public string AdminName { get; set; } = default!;
-
-    [Required, EmailAddress, MaxLength(200)]
-    public string Email { get; set; } = default!;
-
-    [Required]
-    public string PasswordHash { get; set; } = default!;
+    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+    public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
 
     public ICollection<RoleAssignment> RoleAssignments { get; set; } = new List<RoleAssignment>();
-    public string? RefreshToken { get; set; }
-    public DateTime? RefreshTokenExpiryTime { get; set; }
-}
+    public ICollection<Profile> Profiles { get; set; } = new List<Profile>();
+    public ICollection<Admin> Admins { get; set; } = new List<Admin>();
+        
 
-// Models/Role.cs
- 
-
-public class Role
-{
-    public int Id { get; set; }
-
-    [Required, MaxLength(50)]
-    public string Name { get; set; } = default!;
-
-    public ICollection<RoleAssignment> RoleAssignments { get; set; } = new List<RoleAssignment>();
-}
-
-// Models/RoleAssignment.cs  – flexible join table (either UserId or AdminId populated)
-public class RoleAssignment
-{
-    public int Id { get; set; }
-
-    public int RoleId { get; set; }
-    public Role Role { get; set; } = default!;
-
-    public Guid? UserId { get; set; }
-    public User? User { get; set; }
-
-    public Guid? AdminId { get; set; }
-    public Admin? Admin { get; set; }
-}
+       
+    }
 
 }

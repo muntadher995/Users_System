@@ -1,10 +1,10 @@
 ﻿// Controllers/AuthController.cs
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using UserSystem.API.DTOs;
-using UserSystem.API.Services;
+using Ai_LibraryApi.API.DTOs;
+using Ai_LibraryApi.API.Services;
 
-namespace UserSystem.API.Controllers;
+namespace Ai_LibraryApi.API.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
@@ -39,26 +39,28 @@ public class AuthController : ControllerBase
     }
 
 
-    /*[Authorize(Roles = "Admin")]
-    [HttpPost("register")]
-    public async Task<IActionResult> Register(RegisterDto dto)
-        => Ok(await _auth.RegisterAsync(dto));*/
-
-    [Authorize(Roles = "Admin")]
+    //[Authorize(Roles = "Admin")]
     [HttpPost("register/user")]
-    public async Task<IActionResult> RegisterUser(UserRegisterDto dto)
+    public async Task<IActionResult> RegisterUser([FromBody]  UserRegisterDto dto)
         => Ok(await _auth.RegisterUserAsync(dto));
-    [Authorize(Roles = "Admin")]
+
+
+
+    //[Authorize(Roles = "Admin")]
     [HttpPost("register/admin")]
-    public async Task<IActionResult> RegisterAdmin(AdminRegisterDto dto)
+    public async Task<IActionResult> RegisterAdmin([FromBody] AdminRegisterDto dto)
         => Ok(await _auth.RegisterAdminAsync(dto));
 
+
+
     [HttpPost("login/user")]
-    public async Task<IActionResult> LoginUser(LoginDto dto)
+    public async Task<IActionResult> LoginUser([FromBody] UserLoginDto dto)
         => Ok(await _auth.LoginUserAsync(dto));
 
+
+
     [HttpPost("login/admin")]
-    public async Task<IActionResult> LoginAdmin(LoginDto dto)
+    public async Task<IActionResult> LoginAdmin([FromBody] AdminLoginDto dto)
         => Ok(await _auth.LoginAdminAsync(dto));
 
     [HttpPost("refresh-token")]
