@@ -10,9 +10,9 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace UserSystem.Migrations
 {
-    [DbContext(typeof(UserSystemDbContext))]
-    [Migration("20250430123922_init")]
-    partial class init
+    [DbContext(typeof(Ai_LibraryApiDbContext))]
+    [Migration("20250508231445_update")]
+    partial class update
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -24,7 +24,7 @@ namespace UserSystem.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("UserSystem.Models.Admin", b =>
+            modelBuilder.Entity("Ai_LibraryApi.Models.Admin", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -35,6 +35,9 @@ namespace UserSystem.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
+                    b.Property<DateTime?>("CreatedAt")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasMaxLength(200)
@@ -44,15 +47,72 @@ namespace UserSystem.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<DateTime?>("RefreshTokenExpiryTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("RefreshTokenHashed")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("isActive")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("photo")
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("Id");
 
                     b.HasIndex("Email")
                         .IsUnique();
 
+                    b.HasIndex("UserId");
+
                     b.ToTable("Admins");
                 });
 
-            modelBuilder.Entity("UserSystem.Models.Role", b =>
+            modelBuilder.Entity("Ai_LibraryApi.Models.Profile", b =>
+                {
+                    b.Property<Guid>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Address")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Bio")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("Birthdate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Country")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Photo")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("ID");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Profiles");
+                });
+
+            modelBuilder.Entity("Ai_LibraryApi.Models.Role", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -82,7 +142,7 @@ namespace UserSystem.Migrations
                         });
                 });
 
-            modelBuilder.Entity("UserSystem.Models.RoleAssignment", b =>
+            modelBuilder.Entity("Ai_LibraryApi.Models.RoleAssignment", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -110,11 +170,14 @@ namespace UserSystem.Migrations
                     b.ToTable("RoleAssignments");
                 });
 
-            modelBuilder.Entity("UserSystem.Models.User", b =>
+            modelBuilder.Entity("Ai_LibraryApi.Models.User", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Email")
                         .IsRequired()
@@ -125,10 +188,34 @@ namespace UserSystem.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<DateTime?>("RefreshTokenExpiryTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("RefreshTokenHash")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("UserName")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("approve_status")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("emailVerifedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("phone")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("phoneVerifedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("status")
+                        .HasColumnType("bit");
 
                     b.HasKey("Id");
 
@@ -138,19 +225,37 @@ namespace UserSystem.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("UserSystem.Models.RoleAssignment", b =>
+            modelBuilder.Entity("Ai_LibraryApi.Models.Admin", b =>
                 {
-                    b.HasOne("UserSystem.Models.Admin", "Admin")
+                    b.HasOne("Ai_LibraryApi.Models.User", null)
+                        .WithMany("Admins")
+                        .HasForeignKey("UserId");
+                });
+
+            modelBuilder.Entity("Ai_LibraryApi.Models.Profile", b =>
+                {
+                    b.HasOne("Ai_LibraryApi.Models.User", "User")
+                        .WithMany("Profiles")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Ai_LibraryApi.Models.RoleAssignment", b =>
+                {
+                    b.HasOne("Ai_LibraryApi.Models.Admin", "Admin")
                         .WithMany("RoleAssignments")
                         .HasForeignKey("AdminId");
 
-                    b.HasOne("UserSystem.Models.Role", "Role")
+                    b.HasOne("Ai_LibraryApi.Models.Role", "Role")
                         .WithMany("RoleAssignments")
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("UserSystem.Models.User", "User")
+                    b.HasOne("Ai_LibraryApi.Models.User", "User")
                         .WithMany("RoleAssignments")
                         .HasForeignKey("UserId");
 
@@ -161,18 +266,22 @@ namespace UserSystem.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("UserSystem.Models.Admin", b =>
+            modelBuilder.Entity("Ai_LibraryApi.Models.Admin", b =>
                 {
                     b.Navigation("RoleAssignments");
                 });
 
-            modelBuilder.Entity("UserSystem.Models.Role", b =>
+            modelBuilder.Entity("Ai_LibraryApi.Models.Role", b =>
                 {
                     b.Navigation("RoleAssignments");
                 });
 
-            modelBuilder.Entity("UserSystem.Models.User", b =>
+            modelBuilder.Entity("Ai_LibraryApi.Models.User", b =>
                 {
+                    b.Navigation("Admins");
+
+                    b.Navigation("Profiles");
+
                     b.Navigation("RoleAssignments");
                 });
 #pragma warning restore 612, 618

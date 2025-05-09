@@ -1,14 +1,15 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using UserSystem.Models;
+using Ai_LibraryApi.Models;
 
-public class UserSystemDbContext : DbContext
+public class Ai_LibraryApiDbContext : DbContext
 {
-    public UserSystemDbContext(DbContextOptions<UserSystemDbContext> opts) : base(opts) { }
+    public Ai_LibraryApiDbContext(DbContextOptions<Ai_LibraryApiDbContext> opts) : base(opts) { }
 
     public DbSet<User> Users => Set<User>();
     public DbSet<Admin> Admins => Set<Admin>();
     public DbSet<Role> Roles => Set<Role>();
     public DbSet<RoleAssignment> RoleAssignments => Set<RoleAssignment>();
+    public DbSet<Profile> Profiles => Set<Profile>();
 
     protected override void OnModelCreating(ModelBuilder b)
     {
