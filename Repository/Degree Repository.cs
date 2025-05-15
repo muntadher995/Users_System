@@ -1,4 +1,8 @@
+/*using Ai_LibraryApi.Dto;
+using Ai_LibraryApi.Dto.ProfileDto;
+using Ai_LibraryApi.Helper;
 using Ai_LibraryApi.Interfaces;
+using Ai_LibraryApi.Mapping;
 using Ai_LibraryApi.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -10,23 +14,30 @@ namespace Ai_LibraryApi.Repository
 {
     public class DegreeRepository : IDegreeRepository
     {
-        private readonly AppDbContext _context;
+        private readonly Ai_LibraryApiDbContext _context;
         private readonly ILogger<DegreeRepository> _logger;
 
-        public DegreeRepository(AppDbContext context, ILogger<DegreeRepository> logger)
+        public DegreeRepository(Ai_LibraryApiDbContext context, ILogger<DegreeRepository> logger)
         {
             _context = context;
             _logger = logger;
         }
-
-        public async Task<IEnumerable<Degree>> GetAllAsync(int pageNumber, int pageSize)
+       
+        public async Task<PagedResult<DegreeDto>> GetAllAsync(int pageNumber, int pageSize)
         {
             try
             {
-                return await _context.Degrees
+                var query = _context.Set<Degree>();
+                var totalCount = await query.CountAsync();
+                var entities = await query
+                    .OrderBy(d => d.CreatedAt)
                     .Skip((pageNumber - 1) * pageSize)
                     .Take(pageSize)
                     .ToListAsync();
+
+                var items = entities.Select(DegreeMapping.ToDto).ToList();
+
+                return new PagedResult<DegreeDto>(items, totalCount, pageNumber, pageSize);
             }
             catch (Exception ex)
             {
@@ -34,12 +45,16 @@ namespace Ai_LibraryApi.Repository
                 throw;
             }
         }
+         
 
-        public async Task<Degree?> GetByIdAsync(Guid id)
+         
+         public async Task<DegreeDto> GetByIdAsync(Guid id)
         {
             try
             {
-                return await _context.Degrees.FindAsync(id);
+                var degree = await _context.Set<Degree>().FindAsync(id);
+                if (degree == null) return null;
+                return  DegreeMapping.ToDto(degree);
             }
             catch (Exception ex)
             {
@@ -47,14 +62,15 @@ namespace Ai_LibraryApi.Repository
                 throw;
             }
         }
-
-        public async Task<Degree> AddAsync(Degree degree)
+         
+        public async Task<DegreeDto> AddAsync(CreateDegreeDto dto)
         {
             try
             {
-                _context.Degrees.Add(degree);
+                var  degree = DegreeMapping.ToEntity(dto);
+                _context.Set<Degree>().Add(degree);
                 await _context.SaveChangesAsync();
-                return degree;
+                return DegreeMapping.ToDto(degree);
             }
             catch (Exception ex)
             {
@@ -62,21 +78,65 @@ namespace Ai_LibraryApi.Repository
                 throw;
             }
         }
+        public async Task<ProfileDto?> UpdateAsync(Guid id, UpdateProfileDto dto)
+        {
+            try
+            {
+                var existing = await _context.Set<Profile>().FindAsync(id);
+                if (existing == null) return null;
 
-        public async Task<Degree?> UpdateAsync(Guid id, Degree degree)
+                ProfileMapping.UpdateEntity(existing, dto);
+                await _context.SaveChangesAsync();
+
+                return ProfileMapping.ToDto(existing);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Error updating profile {id}");
+                throw;
+            }
+        }
+
+
+        public async Task<ProfileDto?> UpdateAsync(Guid id, UpdateProfileDto dto, Profile entity)
+        {
+            try
+            {
+                var existing = await _context.Set<Profile>().FindAsync(id);
+                if (existing == null) return null;
+                entity.Address = dto.Address ?? existing.Address;
+                entity.Country = dto.Country ?? existing.Country;
+                entity.Birthdate = dto.Birthdate ?? existing.Birthdate;
+                entity.Bio = dto.Bio ?? existing.Bio;
+                entity.Photo = dto.Photo ?? existing.Photo;
+                entity.UpdatedAt = DateTime.UtcNow;
+
+
+                ProfileMapping.UpdateEntity(existing, dto);
+                await _context.SaveChangesAsync();
+
+                return ProfileMapping.ToDto(existing);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Error updating profile {id}");
+                throw;
+            }
+        }
+        public async Task<DegreeDto?> UpdateAsync(Guid id,UpdateDegreeDto dto,Degree entity)
         {
             try
             {
                 var existingDegree = await _context.Degrees.FindAsync(id);
                 if (existingDegree == null) return null;
 
-                existingDegree.DegreeName = degree.DegreeName;
-                existingDegree.University = degree.University;
-                existingDegree.Specialization = degree.Specialization;
-                existingDegree.UpdatedAt = DateTime.UtcNow;
-
+                entity.DegreeName = dto.DegreeName?? existingDegree.DegreeName;
+                entity.University = dto.University?? existingDegree.University;
+                entity.Specialization = dto.Specialization?? existingDegree.Specialization;
+                entity.UpdatedAt = DateTime.UtcNow;
+                DegreeMapping.UpdateEntity(existingDegree, dto);
                 await _context.SaveChangesAsync();
-                return existingDegree;
+                return DegreeMapping.ToDto(existingDegree);
             }
             catch (Exception ex)
             {
@@ -103,4 +163,4 @@ namespace Ai_LibraryApi.Repository
             }
         }
     }
-}
+}*/

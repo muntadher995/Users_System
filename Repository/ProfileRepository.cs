@@ -1,4 +1,4 @@
-﻿
+﻿/*
 using Ai_LibraryApi.Models;
 using Microsoft.Extensions.Logging;
 using Ai_LibraryApi.Interfaces;
@@ -77,14 +77,21 @@ namespace Ai_LibraryApi.Repository
                 }
             }
 
-            public async Task<ProfileDto?> UpdateAsync(Guid id, UpdateProfileDto dto)
+            public async Task<ProfileDto?> UpdateAsync(Guid id, UpdateProfileDto dto, Profile entity)
             {
                 try
                 {
-                    var existing = await _context.Set<Profile>().FindAsync(id);
-                    if (existing == null) return null;
-
-                    ProfileMapping.UpdateEntity(existing, dto);
+                 var existing = await _context.Set<Profile>().FindAsync(id);
+                if (existing == null) return null;
+                entity.Address = dto.Address ?? existing.Address;
+                entity.Country = dto.Country ?? existing.Country;
+                entity.Birthdate = dto.Birthdate ?? existing.Birthdate;
+                entity.Bio = dto.Bio ?? existing.Bio;
+                entity.Photo = dto.Photo ?? existing.Photo;
+                entity.UpdatedAt = DateTime.UtcNow;
+                 
+  
+                ProfileMapping.UpdateEntity(existing, dto);
                     await _context.SaveChangesAsync();
 
                     return ProfileMapping.ToDto(existing);
@@ -115,4 +122,4 @@ namespace Ai_LibraryApi.Repository
             }
         }
     }
-
+*/

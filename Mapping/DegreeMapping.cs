@@ -1,3 +1,6 @@
+using Ai_LibraryApi.Dto;
+using Ai_LibraryApi.Models;
+
 namespace Ai_LibraryApi.Mapping
 {
     public static class DegreeMapping

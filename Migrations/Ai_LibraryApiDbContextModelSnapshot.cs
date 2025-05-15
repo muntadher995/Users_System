@@ -7,10 +7,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace UserSystem.Migrations
+namespace Ai_LibraryApi.Migrations
 {
     [DbContext(typeof(Ai_LibraryApiDbContext))]
-    partial class UserSystemDbContextModelSnapshot : ModelSnapshot
+    partial class Ai_LibraryApiDbContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
@@ -53,9 +53,6 @@ namespace UserSystem.Migrations
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid?>("UserId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<bool>("isActive")
                         .HasColumnType("bit");
 
@@ -64,12 +61,109 @@ namespace UserSystem.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Email")
-                        .IsUnique();
+                    b.ToTable("Admins");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("90effd3b-5178-429b-a301-df2299df7575"),
+                            AdminName = "admin",
+                            CreatedAt = new DateTime(2025, 5, 15, 0, 51, 40, 667, DateTimeKind.Utc).AddTicks(1930),
+                            Email = "admin@example.com",
+                            PasswordHash = "AQAAAAIAAYagAAAAEFesQ6c6jR/pTFG2yr+dpTGjjeOGZItu5nwhtNpaiWNi+ATwhDHjcnVJMzqCTds/ZQ==",
+                            UpdatedAt = new DateTime(2025, 5, 15, 0, 51, 40, 667, DateTimeKind.Utc).AddTicks(1937),
+                            isActive = true
+                        });
+                });
+
+            modelBuilder.Entity("Ai_LibraryApi.Models.Category", b =>
+                {
+                    b.Property<Guid>("UniqueID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("Status")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("UniqueID");
+
+                    b.ToTable("Categories");
+                });
+
+            modelBuilder.Entity("Ai_LibraryApi.Models.Degree", b =>
+                {
+                    b.Property<Guid>("UniqueID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("DegreeName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("ProfileId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Specialization")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("University")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("UniqueID");
+
+                    b.HasIndex("ProfileId");
+
+                    b.ToTable("Degrees");
+                });
+
+            modelBuilder.Entity("Ai_LibraryApi.Models.Notification", b =>
+                {
+                    b.Property<Guid>("UniqueID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Body")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("FromType")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsSeen")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Title")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("UniqueID");
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Admins");
+                    b.ToTable("Notifications");
                 });
 
             modelBuilder.Entity("Ai_LibraryApi.Models.Profile", b =>
@@ -81,11 +175,15 @@ namespace UserSystem.Migrations
                     b.Property<string>("Address")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("ApprovalStatus")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Bio")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime?>("Birthdate")
-                        .HasColumnType("datetime2");
+                    b.Property<string>("Birthdate")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Country")
                         .HasColumnType("nvarchar(max)");
@@ -93,7 +191,14 @@ namespace UserSystem.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("Cv_File")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Photo")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("RejectionReason")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("UpdatedAt")
@@ -165,6 +270,14 @@ namespace UserSystem.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("RoleAssignments");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            AdminId = new Guid("90effd3b-5178-429b-a301-df2299df7575"),
+                            RoleId = 2
+                        });
                 });
 
             modelBuilder.Entity("Ai_LibraryApi.Models.User", b =>
@@ -178,8 +291,7 @@ namespace UserSystem.Migrations
 
                     b.Property<string>("Email")
                         .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PasswordHash")
                         .IsRequired()
@@ -216,17 +328,29 @@ namespace UserSystem.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Email")
-                        .IsUnique();
-
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("Ai_LibraryApi.Models.Admin", b =>
+            modelBuilder.Entity("Ai_LibraryApi.Models.Degree", b =>
                 {
-                    b.HasOne("Ai_LibraryApi.Models.User", null)
-                        .WithMany("Admins")
-                        .HasForeignKey("UserId");
+                    b.HasOne("Ai_LibraryApi.Models.Profile", "Profile")
+                        .WithMany("Degrees")
+                        .HasForeignKey("ProfileId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Profile");
+                });
+
+            modelBuilder.Entity("Ai_LibraryApi.Models.Notification", b =>
+                {
+                    b.HasOne("Ai_LibraryApi.Models.User", "User")
+                        .WithMany("Notifications")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Ai_LibraryApi.Models.Profile", b =>
@@ -268,6 +392,11 @@ namespace UserSystem.Migrations
                     b.Navigation("RoleAssignments");
                 });
 
+            modelBuilder.Entity("Ai_LibraryApi.Models.Profile", b =>
+                {
+                    b.Navigation("Degrees");
+                });
+
             modelBuilder.Entity("Ai_LibraryApi.Models.Role", b =>
                 {
                     b.Navigation("RoleAssignments");
@@ -275,7 +404,7 @@ namespace UserSystem.Migrations
 
             modelBuilder.Entity("Ai_LibraryApi.Models.User", b =>
                 {
-                    b.Navigation("Admins");
+                    b.Navigation("Notifications");
 
                     b.Navigation("Profiles");
 

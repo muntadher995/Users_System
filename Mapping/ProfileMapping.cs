@@ -1,4 +1,4 @@
-﻿using Ai_LibraryApi.Dto.ProfileDto;
+﻿/*using Ai_LibraryApi.Dto.ProfileDto;
 using Ai_LibraryApi.Models;
 
 
@@ -32,7 +32,7 @@ namespace Ai_LibraryApi.Mapping
                     Country = dto.Country,
                     Birthdate = dto.Birthdate,
                     Bio = dto.Bio,
-                    Photo = dto.Photo,
+                    //Photo = dto.PhotoFile,
                     CreatedAt = DateTime.UtcNow,
                     UpdatedAt = DateTime.UtcNow,
                     UserId = dto.UserId
@@ -51,3 +51,4 @@ namespace Ai_LibraryApi.Mapping
         }
     }
 
+*/

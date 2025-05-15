@@ -13,13 +13,13 @@ namespace Ai_LibraryApi.Models
 
     public string? approve_status { get; set; }  
 
-    [Required, EmailAddress, MaxLength(200)]
+    [Required, EmailAddress  ]
     public string? Email { get; set; }
     public DateTime? emailVerifedAt { get; set; }
     public bool status { get; set; } = false;   
 
     [Required]
-    public string? PasswordHash { get; set; }
+    public string PasswordHash { get; set; }
     public string? phone { get; set; }
 
     public DateTime? phoneVerifedAt { get; set; }
@@ -30,10 +30,10 @@ namespace Ai_LibraryApi.Models
 
     public ICollection<RoleAssignment> RoleAssignments { get; set; } = new List<RoleAssignment>();
     public ICollection<Profile> Profiles { get; set; } = new List<Profile>();
-    public ICollection<Admin> Admins { get; set; } = new List<Admin>();
-        
+     
 
-       
+    public ICollection<Notification> Notifications { get; set; } = new List<Notification>();
+
     }
 
 }

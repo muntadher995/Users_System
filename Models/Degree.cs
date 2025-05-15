@@ -1,9 +1,12 @@
-﻿using static System.Runtime.InteropServices.JavaScript.JSType;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Ai_LibraryApi.Models
 {
     public class Degree
     {
+        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Guid UniqueID { get; set; }
         public string? DegreeName { get; set; }
         public string? University { get; set; }
